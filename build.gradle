@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'cn.xiaozhou233.juiceloader'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    archiveVersion.set("")
+}
+
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin('java')) {
+            project.tasks.named('jar') {
+                destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
+            }
+        }
+    }
+}
