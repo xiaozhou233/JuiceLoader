@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'cn.xiaozhou233.entry'
+group = 'cn.xiaozhou233.juiceloader.entry'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -10,10 +10,15 @@ repositories {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    compileOnly("com.google.code.gson:gson:2.13.2")
+
+    implementation(project(':'))
+    implementation(project(":Bootstrap"))
 }
 
 jar {
-    archiveBaseName.set("entry")
+    archiveBaseName.set("Entry")
     archiveVersion.set("")
     destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
 }

@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group = 'cn.xiaozhou233.bootstrap'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+jar {
+    archiveBaseName.set("bootstrap-api")
+    archiveVersion.set("")
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
+}

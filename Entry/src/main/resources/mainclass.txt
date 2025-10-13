@@ -1,4 +1,0 @@
-# entry class name
-mainclass=cn.xiaozhou233.entry.Main
-# entry method name
-method=entryMethod

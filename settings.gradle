@@ -1,3 +1,4 @@
 rootProject.name = 'JuiceLoader'
 include 'Entry'
+include 'Bootstrap'
 

@@ -11,4 +11,7 @@ public class JuiceLoaderNative {
     // Notice: classname is the full name of the class, e.g. "java/lang/String"
     public native boolean redefineClass(Class<?> clazz, byte[] classBytes, int length);
     public native boolean redefineClass(String className, byte[] classBytes, int length);
+
+    // Get Classes
+    public native Class<?>[] getLoadedClasses();
 }
