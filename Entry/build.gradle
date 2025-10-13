@@ -15,6 +15,7 @@ dependencies {
 
     implementation(project(':'))
     implementation(project(":Bootstrap"))
+    implementation(files("lib/JuiceTools-1.0-SNAPSHOT-all.jar"))
 }
 
 jar {
