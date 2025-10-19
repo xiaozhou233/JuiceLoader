@@ -3,15 +3,8 @@ package cn.xiaozhou233.juiceloader;
 import cn.xiaozhou233.bootstrap.*;
 
 public class JuiceLoader {
-    private static final String homePath = System.getProperty("user.home");
-    private static final String defDirectory = ".juiceloader";
     private static JuiceLoaderNative loaderNative;
-    public static void init(String juiceLoaderLibPath, String entryJarPath) {
-        if (juiceLoaderLibPath == null || juiceLoaderLibPath.isEmpty())
-            juiceLoaderLibPath = String.format("%s/%s/libjuiceloader.dll", homePath, defDirectory);
-        if (entryJarPath == null || entryJarPath.isEmpty())
-            entryJarPath = String.format("%s/%s/Entry.jar", homePath, defDirectory);
-
+    public static void init(String juiceLoaderLibPath, String entryJarPath, String entryClass, String entryMethod) {
         try {
             System.load(juiceLoaderLibPath);
             loaderNative = new JuiceLoaderNative();
@@ -39,7 +32,7 @@ public class JuiceLoader {
                 }
             });
 
-            Class.forName("cn.xiaozhou233.juiceloader.entry.Entry").getMethod("start").invoke(null);
+            Class.forName(entryClass).getMethod(entryMethod).invoke(null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -49,7 +42,4 @@ public class JuiceLoader {
         return loaderNative;
     }
 
-    public static void main(String[] args) {
-        init(null, "D:\\Development\\JuiceLoader\\build\\libs\\Entry.jar");
-    }
 }

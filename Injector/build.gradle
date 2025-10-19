@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = 'cn.xiaozhou233.juiceagent.injector'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'cn.xiaozhou233.juiceagent.injector.Injector'
+    }
+    archiveBaseName.set("Injector")
+    archiveVersion.set("")
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("libs"))
+}

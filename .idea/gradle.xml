@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Bootstrap" />
             <option value="$PROJECT_DIR$/Entry" />
+            <option value="$PROJECT_DIR$/Injector" />
           </set>
         </option>
       </GradleProjectSettings>
