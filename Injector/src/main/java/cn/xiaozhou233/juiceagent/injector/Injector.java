@@ -1,15 +1,13 @@
 package cn.xiaozhou233.juiceagent.injector;
 
-import java.io.File;
+import java.io.*;
 import java.util.Scanner;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 public class Injector {
     private static boolean isLoadedLibrary = false;
     public static void main(String[] args) {
         if (!isLoadedLibrary) {
-            System.load(ClassLoader.getSystemResource("./libinjector.dll").getPath());
+            loadLibrary();
             isLoadedLibrary = true;
         }
         Scanner scanner = new Scanner(System.in);
@@ -34,7 +32,7 @@ public class Injector {
         String configDir = scanner.next();
         if (configDir.equals("!c")) {
             //injectorNative.inject(pid, libAgentPath.getAbsolutePath(), libAgentPath.getParent());
-            inject(pid, libAgentPath.getAbsolutePath(), libAgentPath.getParent());
+            inject(pid, libAgentPath.getAbsolutePath(), libAgentPath.getAbsolutePath().replace("libagent.dll", ""));
         } else {
             //injectorNative.inject(pid, libAgentPath.getAbsolutePath(), configDir);
             inject(pid, libAgentPath.getAbsolutePath(), configDir);
@@ -44,7 +42,7 @@ public class Injector {
     public static void inject(int pid, String libAgentPath, String configDir) {
         try {
             if (!isLoadedLibrary) {
-                System.load(Injector.class.getClassLoader().getResource("./libinjector.dll").getPath());
+                loadLibrary();
                 isLoadedLibrary = true;
             }
             InjectorNative injectorNative = new InjectorNative();
@@ -58,7 +56,7 @@ public class Injector {
     public static void inject(int pid, String libAgentPath) {
         try {
             if (!isLoadedLibrary) {
-                System.load(Injector.class.getClassLoader().getResource("./libinjector.dll").getPath());
+                loadLibrary();
                 isLoadedLibrary = true;
             }
             InjectorNative injectorNative = new InjectorNative();
@@ -88,5 +86,29 @@ public class Injector {
             throw new RuntimeException(e);
         }
         System.out.println("======== Jps ========");
+    }
+
+    private static void loadLibrary() {
+        if (!isLoadedLibrary) {
+            try (InputStream in = Injector.class.getResourceAsStream("/libinjector.dll")) {
+                if (in == null) throw new RuntimeException("DLL not found in jar");
+
+                File tempDll = File.createTempFile("libinjector", ".dll");
+                tempDll.deleteOnExit();
+
+                try (FileOutputStream out = new FileOutputStream(tempDll)) {
+                    byte[] buffer = new byte[4096];
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
+                }
+
+                System.load(tempDll.getAbsolutePath());
+                isLoadedLibrary = true;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
