@@ -3,20 +3,17 @@ package cn.xiaozhou233.juiceloader;
 import cn.xiaozhou233.bootstrap.*;
 
 public class JuiceLoader {
-    private static JuiceLoaderNative loaderNative;
-    public static void init(String juiceLoaderLibPath, String entryJarPath, String entryClass, String entryMethod) {
+    public static void init(String entryJarPath, String entryClass, String entryMethod) {
         try {
-            System.load(juiceLoaderLibPath);
-            loaderNative = new JuiceLoaderNative();
 
             // Init Native Library
-            boolean result = loaderNative.init();
+            boolean result = JuiceLoaderNative.init();
             if (!result) {
                 throw new RuntimeException("JuiceLoader init failed!");
             }
 
             // Inject Entry Jar
-            result = loaderNative.injectJar(entryJarPath);
+            result = JuiceLoaderNative.injectJar(entryJarPath);
             if (!result) {
                 throw new RuntimeException("JuiceLoader injectJar failed!");
             }
@@ -37,9 +34,4 @@ public class JuiceLoader {
             throw new RuntimeException(e);
         }
     }
-
-    public static JuiceLoaderNative getLoaderNative() {
-        return loaderNative;
-    }
-
 }

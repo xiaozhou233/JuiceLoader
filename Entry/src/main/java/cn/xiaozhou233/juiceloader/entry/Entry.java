@@ -19,5 +19,12 @@ public class Entry {
         } catch (ClassNotFoundException e) {
             System.out.println("WARN: JuiceLoader class Not Found, is BootstrapBridge (bootstrap-api.jar) loaded?");
         }
+
+        try {
+            cn.xiaozhou233.juiceloader.JuiceLoaderNative.injectJar("D:\\Development\\JuiceTools\\build\\libs\\JuiceTools-1.0-SNAPSHOT-all.jar");
+            Class.forName("cn.xiaozhou233.juicetools.JuiceTools").getMethod("init").invoke(null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
