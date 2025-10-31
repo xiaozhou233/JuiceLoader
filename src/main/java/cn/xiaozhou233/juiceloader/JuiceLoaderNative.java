@@ -14,4 +14,8 @@ public class JuiceLoaderNative {
 
     // Get Classes
     public static native Class<?>[] getLoadedClasses();
+
+    // Get ClassBytes
+    public static native byte[] getClassBytes(Class<?> clazz);
+    public static native byte[] getClassBytesByName(String className);
 }
