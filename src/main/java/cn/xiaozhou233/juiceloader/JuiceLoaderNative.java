@@ -18,4 +18,8 @@ public class JuiceLoaderNative {
     // Get ClassBytes
     public static native byte[] getClassBytes(Class<?> clazz);
     public static native byte[] getClassBytesByName(String className);
+
+    // Retransform
+    public static native boolean retransformClass(Class<?> clazz, byte[] classBytes, int length);
+    public static native boolean retransformClassByName(String className, byte[] classBytes, int length);
 }
