@@ -10,11 +10,7 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    compileOnly("com.google.code.gson:gson:2.13.2")
-
     implementation(project(':'))
-    implementation(project(":Bootstrap"))
 }
 
 jar {

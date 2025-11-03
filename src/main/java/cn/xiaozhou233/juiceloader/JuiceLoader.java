@@ -1,37 +1,25 @@
 package cn.xiaozhou233.juiceloader;
 
-import cn.xiaozhou233.bootstrap.*;
-
 public class JuiceLoader {
-    public static void init(String entryJarPath, String entryClass, String entryMethod) {
-        try {
+    // Init jni/jvmti, and register events
+    public static native boolean init();
 
-            // Init Native Library
-            boolean result = JuiceLoaderNative.init();
-            if (!result) {
-                throw new RuntimeException("JuiceLoader init failed!");
-            }
+    // Add jar to Bootstrap ClassLoader
+    public static native boolean injectJar(String jarPath);
 
-            // Inject Entry Jar
-            result = JuiceLoaderNative.injectJar(entryJarPath);
-            if (!result) {
-                throw new RuntimeException("JuiceLoader injectJar failed!");
-            }
+    // Redefine class
+    // Notice: classname is the full name of the class, e.g. "java/lang/String"
+    public static native boolean redefineClass(Class<?> clazz, byte[] classBytes, int length);
+    public static native boolean redefineClassByName(String className, byte[] classBytes, int length);
 
-            BootstrapBridge.setProvider(new LoaderBridge() {
-                @Override
-                public void startEntry() {
-                    System.out.println("[JuiceLoader] startEntry called!");
-                }
-                @Override
-                public void log(String s) {
-                    System.out.println("[JuiceLoader] " + s);
-                }
-            });
+    // Get Classes
+    public static native Class<?>[] getLoadedClasses();
 
-            Class.forName(entryClass).getMethod(entryMethod).invoke(null);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    // Get ClassBytes
+    public static native byte[] getClassBytes(Class<?> clazz);
+    public static native byte[] getClassBytesByName(String className);
+
+    // Retransform
+    public static native boolean retransformClass(Class<?> clazz, byte[] classBytes, int length);
+    public static native boolean retransformClassByName(String className, byte[] classBytes, int length);
 }

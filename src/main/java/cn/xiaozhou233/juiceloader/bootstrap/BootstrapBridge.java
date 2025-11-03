@@ -1,4 +1,4 @@
-package cn.xiaozhou233.bootstrap;
+package cn.xiaozhou233.juiceloader.bootstrap;
 
 public final class BootstrapBridge {
     private static volatile LoaderBridge provider;
