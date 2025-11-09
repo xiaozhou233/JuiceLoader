@@ -4,7 +4,7 @@ import cn.xiaozhou233.juiceloader.bootstrap.BootstrapBridge;
 import cn.xiaozhou233.juiceloader.bootstrap.LoaderBridge;
 
 public class JuiceLoaderBootstrap {
-    public static void init(String entryJarPath, String entryClass, String entryMethod) {
+    public static void init(String entryJarPath, String entryClass, String entryMethod,  String injectionDir) {
         try {
 
             // Init Native Library

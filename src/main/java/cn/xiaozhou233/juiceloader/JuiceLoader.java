@@ -22,4 +22,7 @@ public class JuiceLoader {
     // Retransform
     public static native boolean retransformClass(Class<?> clazz, byte[] classBytes, int length);
     public static native boolean retransformClassByName(String className, byte[] classBytes, int length);
+
+    // Get Class
+    public static native Class<?> getClassByName(String className);
 }
