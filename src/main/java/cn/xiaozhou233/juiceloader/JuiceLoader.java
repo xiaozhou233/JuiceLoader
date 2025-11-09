@@ -25,4 +25,9 @@ public class JuiceLoader {
 
     // Get Class
     public static native Class<?> getClassByName(String className);
+
+    // Thread/Inject
+    public static native Thread nativeGetThreadByName(String name);
+    public static native ClassLoader nativeInjectJarToThread(Thread thread, String jarPath);
+    
 }
