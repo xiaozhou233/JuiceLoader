@@ -3,9 +3,14 @@ package cn.xiaozhou233.juiceloader;
 import cn.xiaozhou233.juiceloader.bootstrap.BootstrapBridge;
 import cn.xiaozhou233.juiceloader.bootstrap.LoaderBridge;
 
+import java.io.File;
+
 public class JuiceLoaderBootstrap {
-    public static void init(String entryJarPath, String entryClass, String entryMethod,  String injectionDir) {
+    public static void init(String entryJarPath, String entryClass, String entryMethod,  String injectionDir, String libjuiceloaderpath) {
         try {
+
+            File libfile = new File(libjuiceloaderpath);
+            System.load(libfile.getAbsolutePath());
 
             // Init Native Library
             boolean result = JuiceLoader.init();
