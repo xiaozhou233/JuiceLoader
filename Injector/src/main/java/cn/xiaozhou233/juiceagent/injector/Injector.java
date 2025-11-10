@@ -160,7 +160,7 @@ public class Injector {
     }
 
     /**
-     * Load native library from resource "/libinjector.dll" into a temp file and load it.
+     * Load native library from runtime directory.
      * This method is safe to call multiple times; it will only load once.
      *
      * Comments: avoid InputStream.transferTo() for compatibility with older Java 8.
@@ -168,32 +168,22 @@ public class Injector {
     private static synchronized void loadLibrary() {
         if (isLoadedLibrary) return;
 
-        try (InputStream in = Injector.class.getResourceAsStream("/libinjector.dll")) {
-            if (in == null) {
-                throw new FileNotFoundException("DLL not found in JAR resource: /libinjector.dll");
+        try {
+            // Get runtime directory
+            String runtimeDir = System.getProperty("user.dir");
+
+            File libFile = new File(runtimeDir, "libinjector.dll");
+            if (!libFile.exists()) {
+                throw new FileNotFoundException("Native library not found: " + libFile.getAbsolutePath());
             }
-
-            File tempDll = File.createTempFile("libinjector", ".dll");
-            // ensure file is removed on JVM exit
-            tempDll.deleteOnExit();
-
-            try (FileOutputStream out = new FileOutputStream(tempDll)) {
-                byte[] buffer = new byte[4096];
-                int read;
-                while ((read = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, read);
-                }
-                out.flush();
-            }
-
             // Load native library from temporary file
-            System.load(tempDll.getAbsolutePath());
+            System.load(libFile.getAbsolutePath());
 
             // instantiate native wrapper if needed
             injectorNative = new InjectorNative();
 
             isLoadedLibrary = true;
-            System.out.printf("[INFO] Loaded native library: %s%n", tempDll.getAbsolutePath());
+            System.out.printf("[INFO] Loaded native library: %s%n", libFile.getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException("Failed to load native library from resources", e);
         } catch (UnsatisfiedLinkError ule) {
