@@ -9,6 +9,13 @@ public class JuiceLoaderBootstrap {
     public static void init(String entryJarPath, String entryClass, String entryMethod,  String injectionDir, String libjuiceloaderpath) {
         try {
 
+            System.out.printf("Entry Jar Path: %s\n", entryJarPath);
+            System.out.printf("Entry Class: %s\n", entryClass);
+            System.out.printf("Entry Method: %s\n", entryMethod);
+            System.out.printf("Injection Dir: %s\n", injectionDir);
+            System.out.printf("JuiceLoader Library Path: %s\n", libjuiceloaderpath);
+            System.out.println("Juice Loader Bootstrap is initializing...");
+
             File libfile = new File(libjuiceloaderpath);
             System.load(libfile.getAbsolutePath());
 
