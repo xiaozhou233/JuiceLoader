@@ -6,8 +6,13 @@ import cn.xiaozhou233.juiceloader.bootstrap.LoaderBridge;
 import java.io.File;
 
 public class JuiceLoaderBootstrap {
-    public static void init(String entryJarPath, String entryClass, String entryMethod,  String injectionDir, String libjuiceloaderpath) {
+    public static void init(String[] args) {
         try {
+            String entryJarPath = args[0];
+            String entryClass = args[1];
+            String entryMethod = args[2];
+            String injectionDir = args[3];
+            String libjuiceloaderpath = args[4];
 
             System.out.printf("Entry Jar Path: %s\n", entryJarPath);
             System.out.printf("Entry Class: %s\n", entryClass);
