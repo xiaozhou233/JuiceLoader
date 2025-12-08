@@ -7,6 +7,10 @@ import java.io.File;
 
 public class JuiceLoaderBootstrap {
     public static void init(String[] args) {
+        // IPC Server
+        IPCServer ipcServer = new IPCServer();
+        ipcServer.start();
+
         try {
             String entryJarPath = args[0];
             String entryClass = args[1];
