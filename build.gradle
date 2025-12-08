@@ -35,3 +35,10 @@ subprojects {
         }
     }
 }
+
+shadowJar {
+    archiveVersion.set("")
+    archiveClassifier.set("")
+
+    dependsOn subprojects.collect { "${it.path}:build" }
+}
