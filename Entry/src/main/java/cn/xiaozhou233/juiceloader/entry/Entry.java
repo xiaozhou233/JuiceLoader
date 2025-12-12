@@ -29,32 +29,32 @@ public class Entry {
         }
 
         System.out.println("Entry load.");
-        try {
-            System.out.println("Find class avo");
-            Class<?> target = JuiceLoader.getClassByName("avo");
-
-            System.out.println("Get original bytes");
-            byte[] originalBytes = JuiceLoader.getClassBytes(target);
-
-            System.out.println("Use Javassist");
-            ClassPool pool = ClassPool.getDefault();
-            CtClass ctClass = pool.makeClass(new java.io.ByteArrayInputStream(originalBytes));
-
-            // Important: specify method parameter type (float)
-            System.out.println("Get method");
-            CtMethod method = ctClass.getDeclaredMethod("a", new CtClass[]{CtClass.floatType});
-
-            System.out.println("Insert print at beginning");
-            // Insert your call
-            method.insertAfter("{ f().a(\"JuiceOWO!\", 10, 10, 16747520); }");
-
-            System.out.println("Retransform");
-            byte[] result = ctClass.toBytecode();
-            JuiceLoader.retransformClass(target, result, result.length);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println("Find class avo");
+//            Class<?> target = JuiceLoader.getClassByName("avo");
+//
+//            System.out.println("Get original bytes");
+//            byte[] originalBytes = JuiceLoader.getClassBytes(target);
+//
+//            System.out.println("Use Javassist");
+//            ClassPool pool = ClassPool.getDefault();
+//            CtClass ctClass = pool.makeClass(new java.io.ByteArrayInputStream(originalBytes));
+//
+//            // Important: specify method parameter type (float)
+//            System.out.println("Get method");
+//            CtMethod method = ctClass.getDeclaredMethod("a", new CtClass[]{CtClass.floatType});
+//
+//            System.out.println("Insert print at beginning");
+//            // Insert your call
+//            method.insertAfter("{ f().a(\"JuiceOWO!\", 10, 10, 16747520); }");
+//
+//            System.out.println("Retransform");
+//            byte[] result = ctClass.toBytecode();
+//            JuiceLoader.retransformClass(target, result, result.length);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static byte[] readStream(InputStream inStream) throws Exception {

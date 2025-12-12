@@ -172,7 +172,7 @@ public class Injector {
             // Get runtime directory
             String runtimeDir = System.getProperty("user.dir");
 
-            File libFile = new File(runtimeDir, "libinjector.dll");
+            File libFile = new File(runtimeDir, "libinject.dll");
             if (!libFile.exists()) {
                 throw new FileNotFoundException("Native library not found: " + libFile.getAbsolutePath());
             }

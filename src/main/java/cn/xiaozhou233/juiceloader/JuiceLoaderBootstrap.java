@@ -7,10 +7,6 @@ import java.io.File;
 
 public class JuiceLoaderBootstrap {
     public static void init(String[] args) {
-        // IPC Server
-        IPCServer ipcServer = new IPCServer();
-        ipcServer.start();
-
         try {
             String entryJarPath = args[0];
             String entryClass = args[1];
@@ -33,6 +29,10 @@ public class JuiceLoaderBootstrap {
             if (!result) {
                 throw new RuntimeException("JuiceLoader init failed!");
             }
+
+            // IPC Server
+            IPCServer ipcServer = new IPCServer();
+            ipcServer.start();
 
             // Inject Entry Jar
             result = JuiceLoader.injectJar(entryJarPath);
