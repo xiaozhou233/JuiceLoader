@@ -5,9 +5,7 @@ import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.WebSocket;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
@@ -72,6 +70,21 @@ public class IPCServer extends WebSocketServer {
                     byte[] bytes = readStream(new FileInputStream(path));
                     JuiceLoader.retransformClassByName(className, bytes, bytes.length);
                 } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
+
+            // name, path
+            case "getclassbytes": {
+                System.out.println("[JuiceLoader IPC] Getting class bytes for " + obj.get("name").getAsString());
+                String className = obj.get("name").getAsString();
+                String path = obj.get("path").getAsString();
+
+                byte[] bytes = JuiceLoader.getClassBytesByName(className);
+                try {
+                    new FileOutputStream(path).write(bytes);
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;
