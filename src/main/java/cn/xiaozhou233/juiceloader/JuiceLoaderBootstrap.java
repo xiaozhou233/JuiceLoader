@@ -30,10 +30,6 @@ public class JuiceLoaderBootstrap {
                 throw new RuntimeException("JuiceLoader init failed!");
             }
 
-            // IPC Server
-            IPCServer ipcServer = new IPCServer();
-            ipcServer.start();
-
             // Inject Entry Jar
             result = JuiceLoader.injectJar(entryJarPath);
             if (!result) {
