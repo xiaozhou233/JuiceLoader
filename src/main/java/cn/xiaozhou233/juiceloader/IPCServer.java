@@ -1,4 +1,5 @@
 package cn.xiaozhou233.juiceloader;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.java_websocket.server.WebSocketServer;
@@ -10,120 +11,145 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 
 public class IPCServer extends WebSocketServer {
+
     private static final int PORT = 58423;
     private static final Gson gson = new Gson();
+
     public IPCServer() {
         super(new InetSocketAddress("0.0.0.0", PORT));
     }
 
     @Override
     public void onStart() {
-        System.out.println("[JuiceLoader IPC] IPC Server started on port " + PORT);
+        log("IPC Server started on port " + PORT);
         Class<?>[] loadedClasses = JuiceLoader.getLoadedClasses();
         if (loadedClasses != null) {
-            System.out.println("[JuiceLoader IPC] Loaded Classes:" + loadedClasses.length);
+            log("Loaded Classes: " + loadedClasses.length);
         } else {
-            System.err.println("[JuiceLoader IPC] Failed to get loaded classes");
+            logError("Failed to get loaded classes");
         }
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println("[JuiceLoader IPC] Client connected: " + conn.getRemoteSocketAddress());
-        conn.send("{\"code\": 200, \"message\": \"Connected to JuiceLoader IPC Server\"}");
+        log("Client connected: " + conn.getRemoteSocketAddress());
+        sendResponse(conn, 200, "Connected to JuiceLoader IPC Server");
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        System.out.println("[JuiceLoader IPC] Text: " + message);
-        JsonObject obj = gson.fromJson(message, JsonObject.class);
+        log("Received message: " + message);
         int code = 200;
-        switch (obj.get("action").getAsString()) {
-            case "injectjar": {
-                System.out.println("[JuiceLoader IPC] Injecting jar " + obj.get("path").getAsString());
-                JuiceLoader.injectJar(obj.get("path").getAsString());
-                break;
+        String action = null;
+
+        try {
+            JsonObject obj = gson.fromJson(message, JsonObject.class);
+            if (obj == null || !obj.has("action")) {
+                throw new IllegalArgumentException("Invalid JSON or missing 'action'");
             }
 
-            // name, path
-            case "redefine": {
-                System.out.println("[JuiceLoader IPC] Redefining class " + obj.get("name").getAsString() + " from " + obj.get("path").getAsString());
-                String className = obj.get("name").getAsString();
-                String path = obj.get("path").getAsString();
-
-                try {
-                    byte[] bytes = readStream(new FileInputStream(path));
-                    JuiceLoader.redefineClassByName(className, bytes, bytes.length);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                break;
+            action = obj.get("action").getAsString();
+            switch (action) {
+                case "injectjar":
+                    handleInjectJar(obj);
+                    break;
+                case "redefine":
+                    handleRedefine(obj);
+                    break;
+                case "retransform":
+                    handleRetransform(obj);
+                    break;
+                case "getclassbytes":
+                    handleGetClassBytes(obj);
+                    break;
+                default:
+                    code = 400;
+                    logError("Unknown action: " + action);
             }
 
-            // name, path
-            case "retransform": {
-                System.out.println("[JuiceLoader IPC] Retransforming class " + obj.get("name").getAsString());
-                String className = obj.get("name").getAsString();
-                String path = obj.get("path").getAsString();
-
-                try {
-                    byte[] bytes = readStream(new FileInputStream(path));
-                    JuiceLoader.retransformClassByName(className, bytes, bytes.length);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            }
-
-            // name, path
-            case "getclassbytes": {
-                System.out.println("[JuiceLoader IPC] Getting class bytes for " + obj.get("name").getAsString());
-                String className = obj.get("name").getAsString();
-                String path = obj.get("path").getAsString();
-
-                byte[] bytes = JuiceLoader.getClassBytesByName(className);
-                try {
-                    new FileOutputStream(path).write(bytes);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            }
-
-
-            default: {
-                code = 400;
-            }
+        } catch (Exception e) {
+            code = 500;
+            logError("Error handling action " + action + ": " + e.getMessage());
         }
 
-        if (code != 200) {
-            conn.send("{\"code\": " + code + ", \"message\": \"error\"}");
-        } else {
-            conn.send("{\"code\": " + code + ", \"message\": \"done\"}");
+        sendResponse(conn, code, code == 200 ? "done" : "error");
+    }
+
+    private void handleInjectJar(JsonObject obj) {
+        String path = obj.get("path").getAsString();
+        log("Injecting jar: " + path);
+        if (!JuiceLoader.injectJar(path)) {
+            throw new RuntimeException("Failed to inject jar: " + path);
+        }
+    }
+
+    private void handleRedefine(JsonObject obj) throws IOException {
+        String className = obj.get("name").getAsString();
+        String path = obj.get("path").getAsString();
+        log("Redefining class " + className + " from " + path);
+        byte[] bytes = readFileToBytes(path);
+        JuiceLoader.redefineClassByName(className, bytes, bytes.length);
+    }
+
+    private void handleRetransform(JsonObject obj) throws IOException {
+        String className = obj.get("name").getAsString();
+        String path = obj.get("path").getAsString();
+        log("Retransforming class " + className);
+        byte[] bytes = readFileToBytes(path);
+        JuiceLoader.retransformClassByName(className, bytes, bytes.length);
+    }
+
+    private void handleGetClassBytes(JsonObject obj) throws IOException {
+        String className = obj.get("name").getAsString();
+        String path = obj.get("path").getAsString();
+        log("Getting class bytes for " + className);
+        byte[] bytes = JuiceLoader.getClassBytesByName(className);
+        try (FileOutputStream fos = new FileOutputStream(path)) {
+            fos.write(bytes);
         }
     }
 
     @Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
-        super.onMessage(conn, message);
+        log("Received binary message of length " + message.remaining());
     }
 
     @Override
-    public void onClose(WebSocket conn, int code, String reason, boolean remote) {}
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        log("Client disconnected: " + conn.getRemoteSocketAddress() + " code=" + code + " reason=" + reason);
+    }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        ex.printStackTrace();
-        conn.send("{\"code\": 500, \"message\": \"error\"}");
+        logError("WebSocket error: " + ex.getMessage());
+        if (conn != null && conn.isOpen()) {
+            sendResponse(conn, 500, "error");
+        }
     }
 
-    public static byte[] readStream(InputStream inStream) throws Exception {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int len;
-        while ((len = inStream.read(buffer)) != -1)
-            outStream.write(buffer, 0, len);
-        outStream.close();
-        return outStream.toByteArray();
+    private static byte[] readFileToBytes(String path) throws IOException {
+        try (InputStream in = new FileInputStream(path);
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int len;
+            while ((len = in.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+            return out.toByteArray();
+        }
+    }
+
+    private static void sendResponse(WebSocket conn, int code, String message) {
+        if (conn != null && conn.isOpen()) {
+            conn.send("{\"code\": " + code + ", \"message\": \"" + message + "\"}");
+        }
+    }
+
+    private static void log(String msg) {
+        System.out.println("[JuiceLoader IPC] " + msg);
+    }
+
+    private static void logError(String msg) {
+        System.err.println("[JuiceLoader IPC] " + msg);
     }
 }
