@@ -75,7 +75,7 @@ public class JuiceLoaderBootstrap {
             }
             @Override
             public void log(String s) {
-                log(s);
+                System.out.println("[JuiceLoader] " + s);
             }
         });
         log("Bootstrap bridge set up.");
