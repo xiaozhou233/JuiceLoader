@@ -3,9 +3,6 @@ package cn.xiaozhou233.juiceloader.entry;
 import cn.xiaozhou233.juiceloader.JuiceLoader;
 import cn.xiaozhou233.juiceloader.bootstrap.BootstrapBridge;
 import cn.xiaozhou233.juiceloader.bootstrap.LoaderBridge;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -28,6 +25,7 @@ public class Entry {
         }
 
         System.out.println("Entry load.");
+        System.out.println("Loaded class: " + JuiceLoader.getLoadedClasses().length);
     }
 
     public static byte[] readStream(InputStream inStream) throws Exception {
