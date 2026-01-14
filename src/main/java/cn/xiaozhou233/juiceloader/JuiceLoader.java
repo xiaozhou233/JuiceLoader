@@ -6,6 +6,8 @@ public class JuiceLoader {
 
     // Add jar to Bootstrap ClassLoader
     public static native boolean injectJar(String jarPath);
+    public static native boolean AddToBootstrapClassLoaderSearch(String jarPath);
+    public static native boolean AddToSystemClassLoaderSearch(String jarPath);
 
     // Redefine class
     // Notice: classname is the full name of the class, e.g. "java/lang/String"

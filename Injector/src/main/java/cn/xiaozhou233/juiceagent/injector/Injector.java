@@ -39,6 +39,11 @@ public class Injector {
                         pid = Integer.parseInt(vm.id());
                     } catch (NumberFormatException ignored) {
                     }
+                } else if ("Start".equals(vm.displayName())) {
+                    try {
+                        pid = Integer.parseInt(vm.id());
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
             }
         } catch (Exception e) {
