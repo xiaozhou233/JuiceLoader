@@ -1,5 +1,6 @@
 package cn.xiaozhou233.juiceloader;
 
+@SuppressWarnings("unused")
 public class JuiceLoader {
     // Init jni/jvmti, and register events
     public static native boolean init();

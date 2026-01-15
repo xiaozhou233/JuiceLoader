@@ -28,7 +28,6 @@ public class JuiceLoaderBootstrap {
 
         loadNativeLibrary(libPath);
         initJuiceLoader();
-        startIPCServer();
         injectEntryJar(entryJarPath);
         setupBootstrapBridge();
         invokeEntry(entryClass, entryMethod);
@@ -52,12 +51,6 @@ public class JuiceLoaderBootstrap {
             throw new RuntimeException("JuiceLoader initialization failed!");
         }
         log("JuiceLoader initialized successfully.");
-    }
-
-    private static void startIPCServer() {
-        IPCServer ipcServer = new IPCServer();
-        ipcServer.start();
-        log("IPC server started.");
     }
 
     private static void injectEntryJar(String jarPath) {
