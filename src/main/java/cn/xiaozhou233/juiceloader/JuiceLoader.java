@@ -5,11 +5,12 @@ public class JuiceLoader {
     // Init jni/jvmti, and register events
     public static native boolean init();
 
-    // Add jar to Bootstrap ClassLoader
+    // Jar Operation
     @Deprecated
     public static native boolean injectJar(String jarPath);
     public static native boolean AddToBootstrapClassLoaderSearch(String jarPath);
     public static native boolean AddToSystemClassLoaderSearch(String jarPath);
+    public static native boolean AddToClassLoader(String jarPath, ClassLoader loader);
 
     // Define class
     public native static Class<?> defineClass(ClassLoader loader, byte[] bytes);
