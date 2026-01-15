@@ -6,6 +6,7 @@ public class JuiceLoader {
     public static native boolean init();
 
     // Add jar to Bootstrap ClassLoader
+    @Deprecated
     public static native boolean injectJar(String jarPath);
     public static native boolean AddToBootstrapClassLoaderSearch(String jarPath);
     public static native boolean AddToSystemClassLoaderSearch(String jarPath);
