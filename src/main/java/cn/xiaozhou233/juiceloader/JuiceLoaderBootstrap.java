@@ -8,6 +8,11 @@ import java.lang.reflect.Method;
 
 public class JuiceLoaderBootstrap {
 
+    /*
+     * Invoke by native
+     * See: JuiceAgent -> libagent.cpp
+     */
+    @SuppressWarnings("unused")
     public static void init(String[] args) {
         if (args == null || args.length < 5) {
             throw new IllegalArgumentException("Expected 5 arguments: entryJarPath, entryClass, entryMethod, injectionDir, libjuiceloaderPath");
