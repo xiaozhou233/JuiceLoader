@@ -9,6 +9,9 @@ public class JuiceLoader {
     public static native boolean AddToBootstrapClassLoaderSearch(String jarPath);
     public static native boolean AddToSystemClassLoaderSearch(String jarPath);
 
+    // Define class
+    public native static Class<?> defineClass(ClassLoader loader, byte[] bytes);
+
     // Redefine class
     // Notice: classname is the full name of the class, e.g. "java/lang/String"
     public static native boolean redefineClass(Class<?> clazz, byte[] classBytes, int length);
